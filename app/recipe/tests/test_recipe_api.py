@@ -17,9 +17,11 @@ from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 
 RECIPES_URL = reverse('recipe:recipe-list')
 
+
 def detail_url(recipe_id):
     """Create and return a recipe detail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
+
 
 def create_recipe(user, **params):
     """Create and return a sample recipe."""
@@ -34,6 +36,7 @@ def create_recipe(user, **params):
 
     recipe = Recipe.objects.create(user=user, **defaults)
     return recipe
+
 
 def create_user(**params):
     """Create and return a new user."""
@@ -58,7 +61,8 @@ class PrivateRecipeAPITests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email='test@example.com', password='testpass123')
+        self.user = create_user(email='test@example.com',
+                                password='testpass123')
         self.client.force_authenticate(user=self.user)
 
     def test_retrieve_recipes(self):
@@ -75,7 +79,8 @@ class PrivateRecipeAPITests(TestCase):
 
     def test_recipe_list_limited_to_user(self):
         """Test list of recipes is limited for authenticated user."""
-        other_user = create_user(email='other@example.com', password='test123')
+        other_user = create_user(email='other@example.com',
+                                 password='test123')
         create_recipe(user=other_user)
         create_recipe(user=self.user)
 
@@ -157,7 +162,8 @@ class PrivateRecipeAPITests(TestCase):
 
     def test_update_user_returns_error(self):
         """Test changing the recipe user results in an error."""
-        new_user = create_user(email='user2@example.com', password='testpass123')
+        new_user = create_user(email='user2@example.com',
+                               password='testpass123')
         recipe = create_recipe(user=self.user)
 
         payload = {'user': new_user.id}
@@ -179,7 +185,8 @@ class PrivateRecipeAPITests(TestCase):
 
     def test_delete_others_users_recipe_error(self):
         """Test trying to delete another user's recipe gives error."""
-        new_user = create_user(email='user2@example.com', password='testpass123')
+        new_user = create_user(email='user2@example.com',
+                               password='testpass123')
         recipe = create_recipe(user=new_user)
 
         url = detail_url(recipe.id)
